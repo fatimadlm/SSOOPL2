@@ -1,0 +1,9 @@
+Grupo de la práctica 2,laboratorio 12:00-14:00,3.
+Participantes:
+•	Romeo Bernal Alcelay
+•	Sergio Cañada García
+•	Esteban Gómez García
+•	Fátima Cristina de la Morena Rejón
+ 
+Profesor: David Fernández Barrero
+Git:https://github.com/RomeoB5/PL2_SSOO.git
