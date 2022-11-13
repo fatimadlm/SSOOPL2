@@ -8,10 +8,12 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <errno.h>
+#include <stddef.h>
 
 #include "internas.h"
 #include "entrada_minishell.h"
 #include "ejecutar.h"
+#include "parser.h"
 
 
 
