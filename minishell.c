@@ -15,11 +15,21 @@
 #include "ejecutar.h"
 #include "parser.h"
 
-
+static void manejar_sigchild(int signo)
+{
+	int estado;
+	waitpid(-1, &estado, WNOHANG); /* ¡EXPLICAR Y COMPRENDER BIEN! */
+}
 
 int main (int argc, char *argv[])
 {
 	char buf [BUFSIZ];			/*Variable donde se almacena la orden*/
+	struct sigaction sa;
+	memset(&sa, 0, sizeof(sa));
+	sa.sa_handler = manejar_sigchild;
+	sa.sa_flags = SA_NOCLDSTOP | SA_RESTART;
+	sigaction(SIGCHLD, &sa, NULL);
+	
 	while(1)
 	{
 		imprimir_prompt();		/*Imprime la pantalla incial de la minishell*/ 
@@ -44,5 +54,6 @@ int main (int argc, char *argv[])
 	   		}
 	   	}
 	}
+	//exit(EXIT_SUCCESS); nose hace algo?
 	return 0;
 }
