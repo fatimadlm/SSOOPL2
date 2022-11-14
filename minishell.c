@@ -18,16 +18,19 @@
 static void manejar_sigchild(int signo)
 {
 	int estado;
-	waitpid(-1, &estado, WNOHANG); /* ¡EXPLICAR Y COMPRENDER BIEN! */
+	waitpid(-1, &estado, WNOHANG); // el waitpid espera a cualquier hijo (significado del -1)
+	//cambie de estado, y que vuelva inmediatamente si ningun hijo a salido (significado del WNOHANG)
 }
 
 int main (int argc, char *argv[])
 {
 	char buf [BUFSIZ];			/*Variable donde se almacena la orden*/
 	struct sigaction sa;
-	memset(&sa, 0, sizeof(sa));
+	memset(&sa, 0, sizeof(sa));	//memset llena la direccion de memoria sa de 0. (lo vacia?)
 	sa.sa_handler = manejar_sigchild;
-	sa.sa_flags = SA_NOCLDSTOP | SA_RESTART;
+	sa.sa_flags = SA_NOCLDSTOP | SA_RESTART; 	//las flags cambian como funciona sigaction, estas flags hacen:
+							//NOCLDSTOP -> no recibes avisos cauando los procesos del hijo paran o continuan.
+							//RESTART -> puedes resetear algunas llamadas al sistema que estan a traves de signals.
 	sigaction(SIGCHLD, &sa, NULL);
 	
 	while(1)
