@@ -12,7 +12,6 @@
 pid_t ejecutar_orden(const char *orden, int *pbackgr)
 {
    char **args;
-   char **aux = 0;
    pid_t pid = 0;
    int indice_ent = -1, indice_sal = -1; /* por defecto, no hay < ni > */
   
@@ -20,10 +19,9 @@ pid_t ejecutar_orden(const char *orden, int *pbackgr)
    {
    	if (pid != 0){
 	printf ("vacio");
-	/* kill(pid, SIGKILL); */
 	}
       	return(-1);
-   }else if( (pid == 0) && (execvp(args[0], aux) == -1)){
+   }else if( (pid == 0) && (execvp(args[0], args) == -1)){
 	printf ("No encontrada");
 	return pid;
    }else{
