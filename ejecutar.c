@@ -14,10 +14,11 @@ pid_t ejecutar_orden(const char *orden, int *pbackgr)
    char **args;
    //char **aux = 0;
    pid_t pid = 0;
-   int indice_ent = -1, indice_sal = -1; /* por defecto, no hay < ni > */
+   int indice_ent = -1, indice_sal = -1; /* Inicializamos los indices de entrada y salida,valores por defecto*/
    if ( (args=parser_orden(orden, &indice_ent, &indice_sal, pbackgr)) == NULL)
    {
-   	if (pid != 0){
+   	if (pid != 0)  //Si es proceso padre
+	{
 	printf ("vacio");
 	}else{
 	pid = fork(); //creamos minishell hija
@@ -28,7 +29,7 @@ pid_t ejecutar_orden(const char *orden, int *pbackgr)
 	return pid;
    }else{
 	printf ("ejecutar2");
-	free_argumentos(args);
+	free_argumentos(args);     //liberamos memoria dinamica de argumentos
 	return pid;
    }
    /*Si la linea de ordenes posee tuberias o redirecciones, podra incluir 
