@@ -24,7 +24,7 @@ redirecciones.o: redirecciones.c redirecciones.h
 #Obtencion  de libshell.a
 libshell.a: parser.o internas.o
 	ar crs libshell.a parser.o internas.o 
-	#compilamos las bibliotecas
+	#creamos el archivo de almacenamiento,utilizando ar csr
 	
 #Limpiamos todos los *.o cuando ejecutamos clean	
 .PHONY: clean
