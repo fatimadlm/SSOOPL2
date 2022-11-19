@@ -47,8 +47,6 @@ void ejecutar_linea_ordenes(const char *orden)
 	
    /* Si la orden es compuesta, podra incluir aqui, en otra fase de la 
    practica, el codigo para su tratamiento  */                        
- 	char *arg2[3] = {"sleep","10","&"};
-	execvp(arg2[0], arg2);
 
    ejecutar_orden(orden, &backgr);
    
