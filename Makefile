@@ -19,7 +19,7 @@ libmemoria.o: libmemoria.h libmemoria.c
 	$(CC) $(CFLAGS) -c libmemoria.c
 
 redirecciones.o: redirecciones.c redirecciones.h
-	$(CC) $(CFLAGS) -c redirecciones.c
+	$(CC) $(CFLAGS) -c redirecciones.c //Accedemos a las variables
 
 libshell.a: parser.o internas.o
 	ar crs libshell.a parser.o internas.o
