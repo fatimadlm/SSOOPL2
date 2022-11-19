@@ -35,7 +35,7 @@ int main (int argc, char *argv[])
 	sigaction(SIGCHLD, &sa, NULL);  		//sigaction cambia la acción de un proceso cuando recibe una señal.
 							//en este caso, la señal es SIGCHILD. Como act es no nulo y oldact es nulo,
 							//SIGCHILD se instala en &sa y  sustituye al null
-	//Es decir, cuando el hijo de un proceso termina, se guarda el estado en sa
+	//Es decir, cuando el hijo de un proceso termina, se guarda el estado en sa ?
 	
 	while(1)
 	{
