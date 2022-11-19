@@ -23,7 +23,8 @@ redirecciones.o: redirecciones.c redirecciones.h
 	$(CC) $(CFLAGS) -c redirecciones.c
 #Obtencion  de libshell.a
 libshell.a: parser.o internas.o
-	ar crs libshell.a parser.o internas.o
+	ar crs libshell.a parser.o internas.o 
+	#compilamos las bibliotecas
 	
 #Limpiamos todos los *.o cuando ejecutamos clean	
 .PHONY: clean
