@@ -17,20 +17,18 @@ pid_t ejecutar_orden(const char *orden, int *pbackgr)
    int indice_ent = -1, indice_sal = -1; /* por defecto, no hay < ni > */
    if ( (args=parser_orden(orden, &indice_ent, &indice_sal, pbackgr)) == NULL)
    {
-   	if (pid != 0){
-	printf ("vacio");
-	}else{
-	pid = fork(); //creamos minishell hija
-	}
-      	return(-1);
-   }else if( (pid == 0) && (execvp(args[0], args) == -1)){
-   	printf("No encontrada\n");
-	return pid;
-   }else{
-	printf ("ejecutar2");
-	free_argumentos(args);
-	return pid;
+	//printf ("vacio\n");
+      	return -1;
    }
+   pid = fork();
+   if( pid == 0){ 
+   	if(execvp(args[0], args) <0){
+   	printf("Error execvp\n");
+	exit(-1);
+   	}
+   }
+   free_argumentos(args);
+   return pid;
    /*Si la linea de ordenes posee tuberias o redirecciones, podra incluir 
     aqui, en otras fases de la practica, el codigo para su tratamiento.  */
 	
@@ -40,16 +38,17 @@ pid_t ejecutar_orden(const char *orden, int *pbackgr)
 void ejecutar_linea_ordenes(const char *orden)
 {
 	
-   //pid_t pid;
+   pid_t pid;
    int backgr;
-	
+   char *string;
+   char *instruccion;
 
-	
-   /* Si la orden es compuesta, podra incluir aqui, en otra fase de la 
-   practica, el codigo para su tratamiento  */                        
 
-   ejecutar_orden(orden, &backgr);
-   
+   string = strdup(orden);
+   while((instruccion = strsep(&string, ";")) != NULL){
+   		pid = ejecutar_orden(instruccion, &backgr);
+   		waitpid(pid, NULL, 0);
+   }               
 
 
 }   
