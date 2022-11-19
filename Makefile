@@ -1,8 +1,8 @@
-all: minishell
-
+all: minishell //Por defecto se generara el objeto all
+//Creamos las variables
 CC = gcc
 CFLAGS = -g -Wall
-
+//Indicamos la estructura de dependencias
 minishell: minishell.o entrada_minishell.o ejecutar.o libmemoria.o redirecciones.o libshell.a
 	$(CC) $(CFLAGS) minishell.o ejecutar.o entrada_minishell.o libmemoria.o redirecciones.o internas.o parser.o -o minishell
 	
@@ -24,7 +24,7 @@ redirecciones.o: redirecciones.c redirecciones.h
 libshell.a: parser.o internas.o
 	ar crs libshell.a parser.o internas.o
 	
-	
+//Limpiamos todos los *.o cuando realizamos el clean	
 .PHONY: clean
 clean:
 	rm -f minishell.o
