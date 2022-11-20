@@ -39,6 +39,7 @@ int main (int argc, char *argv[])
 	
 	while(1)
 	{
+		
 		imprimir_prompt();			// Imprime la pantalla incial de la minishell*/ 
 		leer_linea_ordenes(buf);		// Lee el texto introducido desde la minishell y lo almacena en memoria 
 						  	// añadiendo el carácter de fin de linea
@@ -51,12 +52,12 @@ int main (int argc, char *argv[])
 	   		if (es_ord_interna(buf)!=1)     // Comprueba la naturaleza de la orden, si la función devuelve un 1
 						        // es una orden interna
 	   		{
-	   			printf("Ejecutar linea de ordenes ");
+	   			//printf("Ejecutar linea de ordenes ");
 	   			ejecutar_linea_ordenes(buf);
 	   		}
 	   		else
 	   		{
-	   			printf("Ejecutar orden interna");
+	   			//printf("Ejecutar orden interna");
 	   			ejecutar_ord_interna(buf);
 	   		}
 	   	}
