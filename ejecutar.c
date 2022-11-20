@@ -45,7 +45,7 @@ void ejecutar_linea_ordenes(const char *orden)
 
 
    string = strdup(orden);				       //Duplica el contenido de orden y lo almacena en el puntero "string"
-   while((instruccion = strsep(&string, ";")) != NULL){	       //Separa la cadena duplicada "string" de los carácteres ";" y los ejecuta por separado
+   while((instruccion = strsep(&string, ";")) != NULL){	       //Separa el contenido del puntero "string" de los carácteres ";" y los ejecuta por separado
    		pid = ejecutar_orden(instruccion, &backgr);
    		waitpid(pid, NULL, 0);			       //Espera hasta que se complete la ejecución de la orden	
    }               
