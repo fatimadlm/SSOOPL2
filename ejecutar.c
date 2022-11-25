@@ -1,55 +1,46 @@
 #include <stdio.h>
-#include <string.h>
+#include <errno.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <stdlib.h>
-#include <sys/wait.h>
+#include <fcntl.h>
 #include <unistd.h>
 
-#include "parser.h"
-#include "ejecutar.h"
-#include "libmemoria.h"
+
+/* funcion que abre el archivo situado en la posicion indice_entrada+1 */
+/* de la orden args y elimina de ella la redireccion completa          */
 
 
-pid_t ejecutar_orden(const char *orden, int *pbackgr)
-{
-   char **args;
-   //char **aux = 0;
-   pid_t pid = 0;
-   int indice_ent = -1, indice_sal = -1; /* por defecto, no hay < ni > */
-   if ( (args=parser_orden(orden, &indice_ent, &indice_sal, pbackgr)) == NULL)
-   {
-	//printf ("vacio\n");
-      	return -1;
-   }
-   pid = fork();
-   if( pid == 0){ 
-   	if(execvp(args[0], args) <0){
-   	printf("Error execvp\n");
-	exit(-1);
-   	}
-   }
-   free_argumentos(args);
-   return pid;
-   /*Si la linea de ordenes posee tuberias o redirecciones, podra incluir 
-    aqui, en otras fases de la practica, el codigo para su tratamiento.  */
-	
-	
+
+void redirec_entrada(char **args, int indice_entrada, int *entrada)
+	{
+	int file;
+	file = open(args[indice_entrada+1], O_RDONLY);
+	if (file == -1 ){
+		printf("Error redirec entrada\n");
+		
+	}
+	else{
+		*entrada = file;
+		args[indice_entrada] = '\0';
+		args[indice_entrada+1] = '\0';
+	}
 }
 
-void ejecutar_linea_ordenes(const char *orden)
-{
-	
-   pid_t pid;
-   int backgr;
-   char *string;
-   char *instruccion;
+/* funcion que abre el archivo situado en la posicion indice_salida+1 */
+/* de la orden args y elimina de ella la redireccion completa         */
 
-
-   string = strdup(orden);				       //Duplica el contenido de orden y lo almacena en el puntero "string"
-   while((instruccion = strsep(&string, ";")) != NULL){	       //Separa el contenido del puntero "string" de los carácteres ";" y los ejecuta por separado
-   		pid = ejecutar_orden(instruccion, &backgr);
-   		waitpid(pid, NULL, 0);			       //Espera hasta que se complete la ejecución de la orden	
-   }               
-
-
-}   
-
+void redirec_salida(char **args, int indice_salida, int *salida)
+	{
+	int file2;
+	file2 = open(args[indice_salida+1],O_WRONLY | O_CREAT | O_TRUNC , 0600);
+	if (file2 == -1 ){
+		printf("Error redirec salida\n");
+		
+	}
+	else{
+		*salida = file2;
+		args[indice_salida] = '\0';
+		args[indice_salida+1] = '\0';
+	}
+}
