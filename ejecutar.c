@@ -16,24 +16,8 @@ int ** crear_pipes ( int nordenes ) 
  for ( i = 0; i < ( nordenes - 1); i ++) 
 	{ 
 	pipes [ i ] = ( int *) malloc ( sizeof ( int ) * 2); 
-	if (i=0){
-		if (nordenes>1) {
-		salida = pipes[0][1];
-		}else{
-		salida=STDOUT_FILENO;
-	pid[0]=ejecutar_orden(ordenes[0],STDIN_FILENO,salida,&backgr);}}
-	if ((i=nordenes-1)&&(nordenes>1)){
-	entrada=pipes[nordenes-2][0];
-	salida= STDOUT_FILENO;
-	pid[i]=ejecutar_orden(ordenes[i],entrada,STDOUT_FILENO,&backgr);
-	}else{
-	//-Falta orden intermedia-
 	}
-	if(backgr=0&&pid[nordenes-1]>0){
-	waitpid();
-	free(pid);
-	free_ordenes_pipes(ordenes,pipes,nordenes);
-	}
+	
 return ( pipes );}
 
 pid_t ejecutar_orden(const char *orden, int *pbackgr)
@@ -98,6 +82,23 @@ void ejecutar_linea_ordenes(const char *orden)
    string = strdup(orden);				       //Duplica el contenido de orden y lo almacena en el puntero "string"
    while((instruccion = strsep(&string, ";")) != NULL){	       //Separa el contenido del puntero "string" de los carácteres ";" y los ejecuta por separado
    		pid = ejecutar_orden(instruccion, &backgr);
+		if (i=0){
+		if (nordenes>1) {
+		salida = pipes[0][1];
+		}else{
+		salida=STDOUT_FILENO;
+	pid[0]=ejecutar_orden(ordenes[0],STDIN_FILENO,salida,&backgr);}}
+	if ((i=nordenes-1)&&(nordenes>1)){
+	entrada=pipes[nordenes-2][0];
+	salida= STDOUT_FILENO;
+	pid[i]=ejecutar_orden(ordenes[i],entrada,STDOUT_FILENO,&backgr);
+	}else{
+	//-Falta orden intermedia-
+	}
+	if(backgr=0&&pid[nordenes-1]>0){
+	free(pid);
+	free_ordenes_pipes(ordenes,pipes,nordenes);
+	}
    		waitpid(pid, NULL, 0);	}		       //Espera hasta que se complete la ejecución de la orden
    if (backgr=0 && (pid[nordenes-1])){
    free_ordenes_pipes(instruccion,pipes,nordenes);
