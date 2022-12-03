@@ -8,16 +8,16 @@
 #include "libmemoria.h"
 #include "redirecciones.h"
 
-int** crear_pipes(int nordenes)
+int** crear_pipes(int nordenes)    //para la creacion de pipes
 { 
 	int** pipes = NULL;
 	int i;
 	
-	pipes = (int**)malloc(sizeof(int*) * (nordenes - 1));
+	pipes = (int**)malloc(sizeof(int*) * (nordenes - 1)); //crear tantas pipes como ordenes -1
 	for( i = 0; i < (nordenes - 1 ); i++)
 	{
 		pipes[i] = (int *)malloc(sizeof(int) * 2);
-		pipe(pipes[i]); //creamos tuberia
+		pipe(pipes[i]); //creamos tuberia para cada orden -1
 	}
 	return (pipes);
 }
@@ -89,15 +89,15 @@ void ejecutar_linea_ordenes(const char *orden)
    string = strdup(orden);				       //Duplica el contenido de orden y lo almacena en el puntero "string"
    while((instruccion = strsep(&string, ";")) != NULL){	       /*Separa el contenido del puntero "string" de los carácteres ";"*/
    	ordenes = parser_pipes(instruccion, &nordenes);
-   	pipes=crear_pipes(nordenes);
+   	pipes=crear_pipes(nordenes);                    //invocar a crear_pipes para crear las necesarias
    	pids = malloc((nordenes)*sizeof(int));		//reservamos espacio en la memoria para la estructura pid_t
-   	for( int i = 0; i < nordenes; i++)	
+   	for( int i = 0; i < nordenes; i++)		//repetir norden veces
    	{
    		if( i==0 )
    		{
    			if( nordenes > 1) //mas de una orden
    			{
-   				salida = pipes[0][1];
+   				salida = pipes[0][1]; 	      //saca la salida de la tuberia
    			}
    			else
    			{
@@ -107,15 +107,15 @@ void ejecutar_linea_ordenes(const char *orden)
    		}
    		else if( (i == nordenes - 1) && (nordenes > 1)) //solo una tuberia
    		{
-   			entrada = pipes[nordenes-2][0];
-   			salida = STDOUT_FILENO;
-   			pids[i] = ejecutar_orden(ordenes[i], entrada, salida, &backgr);
+   			entrada = pipes[nordenes-2][0];      //saca la entrada de la pipe
+   			salida = STDOUT_FILENO;		     
+   			pids[i] = ejecutar_orden(ordenes[i], entrada, salida, &backgr); //ejecuta la orden 
    		}
    		else //mas de una tuberia
 		{
    			entrada = pipes[i-1][0]; //descriptor de lectura del pipe
    			salida = pipes[i][1];	//descriptor de escritura del pipe
-   			pids[i] = ejecutar_orden(ordenes[i], entrada, salida, &backgr);	
+   			pids[i] = ejecutar_orden(ordenes[i], entrada, salida, &backgr);	//ejectua la orden
    		}
    	}	
 		
@@ -125,7 +125,7 @@ void ejecutar_linea_ordenes(const char *orden)
    	}
    }
    	free(pids);
-   	free_ordenes_pipes(ordenes,pipes,nordenes);
+   	free_ordenes_pipes(ordenes,pipes,nordenes);    //libera el espacio de los procesos y de las pipes
 
 }
    
