@@ -87,17 +87,17 @@ void ejecutar_linea_ordenes(const char *orden)
 		salida = pipes[0][1];
 		}else{
 		salida=STDOUT_FILENO;
-	pid[0]=ejecutar_orden(ordenes[0],STDIN_FILENO,salida,&backgr);}}
+	pid[0]=ejecutar_orden(instruccion[0],STDIN_FILENO,salida,&backgr);}}
 	if ((i=nordenes-1)&&(nordenes>1)){
 	entrada=pipes[nordenes-2][0];
 	salida= STDOUT_FILENO;
-	pid[i]=ejecutar_orden(ordenes[i],entrada,STDOUT_FILENO,&backgr);
+	pid[i]=ejecutar_orden(instruccion[i],entrada,STDOUT_FILENO,&backgr);
 	}else{
 	//-Falta orden intermedia-
 	}
 	if(backgr=0&&pid[nordenes-1]>0){
 	free(pid);
-	free_ordenes_pipes(ordenes,pipes,nordenes);
+	free_ordenes_pipes(instruccion,pipes,nordenes);
 	}
    		waitpid(pid, NULL, 0);	}		       //Espera hasta que se complete la ejecución de la orden
    if (backgr=0 && (pid[nordenes-1])){
