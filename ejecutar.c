@@ -8,30 +8,30 @@
 #include "libmemoria.h"
 #include "redirecciones.h"
 
-int ** crear_pipes ( int nordenes ) 
+int** crear_pipes(int nordenes)
 { 
- int ** pipes = NULL ; 
- int i ;  
- pipes = ( int **) malloc ( sizeof ( int *) * ( nordenes - 1)); 
- for ( i = 0; i < ( nordenes - 1); i ++) 
-	{ 
-	pipes [ i ] = ( int *) malloc ( sizeof ( int ) * 2); 
-	}
+	int** pipes = NULL;
+	int i;
 	
-return ( pipes );}
+	pipes = (int**)malloc(sizeof(int*) * (nordenes - 1));
+	for( i = 0; i < (nordenes - 1 ); i++)
+	{
+		pipes[i] = (int *)malloc(sizeof(int) * 2);
+		pipe(pipes[i]); //creamos tuberia
+	}
+	return (pipes);
+}
 
-pid_t ejecutar_orden(const char *orden, int *pbackgr)
+pid_t ejecutar_orden(const char *orden, int entrada, int salida, int *pbackgr)
 {
    char **args;
-   //char **aux = 0;
    pid_t pid = 0;
-   
+   int indice_ent = -1, indice_sal = -1; 		/* por defecto, no hay < ni > */
 
-   int indice_ent = -1, indice_sal = -1,entrada = 0, salida = 1; 		/* por defecto, no hay < ni > */
    if ( (args=parser_orden(orden, &indice_ent, &indice_sal, pbackgr)) == NULL)	//parser 
    {	/*en el caso de que no haya argumentos por consola*/
-	//printf ("vacio\n");
-      	return -1;
+
+      	return (-1);
    }
    if(indice_ent != -1)
 	{	/*en el caso de que haya una redireccion de entrada hacemos una llamada a la funcion que se encarga de la instruccion*/
@@ -43,7 +43,6 @@ pid_t ejecutar_orden(const char *orden, int *pbackgr)
 	}
 
    pid = fork(); /*creamos el proceso hijo mediante fork()*/
-
    if(pid == 0)
    { 
 	if(entrada != 0)
@@ -54,15 +53,22 @@ pid_t ejecutar_orden(const char *orden, int *pbackgr)
 	{	/*hay redireccionamiento de salida*/
 		dup2(salida,1);
 	}
-
    	if(execvp(args[0], args) < 0)
 	{	/*ejecucion de la orden correspondiente*/
    		printf("Error execvp\n");
 		exit(-1);
    	}
+   }else{
+   	if(entrada!=0)
+   	{
+   		close(entrada); //cerramos la entrada si no esta cerrada ya
+   	}
+   	if(salida!=1)
+   	{
+   		close(salida); //cerramos la salida si no esta cerrada ya
+   	}
    }
-   entrada = 0;
-   salida = 1;
+
    free_argumentos(args);
    return pid;
 }
@@ -70,37 +76,61 @@ pid_t ejecutar_orden(const char *orden, int *pbackgr)
 void ejecutar_linea_ordenes(const char *orden)
 {
    int nordenes;
-   pid_t pid;
+   pid_t *pids=NULL;
    int backgr;
    char *string;
-   char *instruccion;
+   char* instruccion;
    int **pipes;
-   instruccion=parser_pipes(orden,&nordenes);
-   pipes=crear_pipes(nordenes);
+   char** ordenes;
+   int entrada;
+   int salida;
 
 
    string = strdup(orden);				       //Duplica el contenido de orden y lo almacena en el puntero "string"
-   while((instruccion = strsep(&string, ";")) != NULL){	       //Separa el contenido del puntero "string" de los carácteres ";" y los ejecuta por separado
-   		pid = ejecutar_orden(instruccion, &backgr);
-		if (i=0){
-		if (nordenes>1) {
-		salida = pipes[0][1];
-		}else{
-		salida=STDOUT_FILENO;
-	pid[0]=ejecutar_orden(instruccion[0],STDIN_FILENO,salida,&backgr);}}
-	if ((i=nordenes-1)&&(nordenes>1)){
-	entrada=pipes[nordenes-2][0];
-	salida= STDOUT_FILENO;
-	pid[i]=ejecutar_orden(instruccion[i],entrada,STDOUT_FILENO,&backgr);
-	}else{
-	//-Falta orden intermedia-
-	}
-	if(backgr=0&&pid[nordenes-1]>0){
-	free(pid);
-	free_ordenes_pipes(instruccion,pipes,nordenes);
-	}
-   		waitpid(pid, NULL, 0);	}		       //Espera hasta que se complete la ejecución de la orden
-   if (backgr=0 && (pid[nordenes-1])){
-   free_ordenes_pipes(instruccion,pipes,nordenes);
-   free(pid);}
-   }   
+   while((instruccion = strsep(&string, ";")) != NULL){	       /*Separa el contenido del puntero "string" de los carácteres ";"*/
+   	ordenes = parser_pipes(instruccion, &nordenes);
+   	pipes=crear_pipes(nordenes);
+   	pids = malloc((nordenes)*sizeof(int));		//reservamos espacio en la memoria para la estructura pid_t
+   	for( int i = 0; i < nordenes; i++)	
+   	{
+   		if( i==0 )
+   		{
+   			if( nordenes > 1) //mas de una orden
+   			{
+   				salida = pipes[0][1];
+   			}
+   			else
+   			{
+   				salida = STDOUT_FILENO;
+   			}	
+   			pids[0] = ejecutar_orden(ordenes[0], entrada, salida, &backgr);
+   		}
+   		else if( (i == nordenes - 1) && (nordenes > 1)) //solo una tuberia
+   		{
+   			entrada = pipes[nordenes-2][0];
+   			salida = STDOUT_FILENO;
+   			pids[i] = ejecutar_orden(ordenes[i], entrada, salida, &backgr);
+   		}
+   		else //mas de una tuberia
+		{
+   			entrada = pipes[i-1][0]; //descriptor de lectura del pipe
+   			salida = pipes[i][1];	//descriptor de escritura del pipe
+   			pids[i] = ejecutar_orden(ordenes[i], entrada, salida, &backgr);	
+   		}
+   	}	
+		
+   	if ((backgr==0) && (pids[nordenes-1]>0))
+   	{
+   		waitpid(pids[nordenes-1], NULL, 0);	//Espera hasta que se complete la ejecución de la orden
+   	}
+   }
+   	free(pids);
+   	free_ordenes_pipes(ordenes,pipes,nordenes);
+
+}
+   
+   
+   
+   
+   
+   
