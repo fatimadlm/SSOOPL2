@@ -3,7 +3,7 @@
 #include "libmemoria.h"
 
 
-void free_argumentos(char **args)
+void free_argumentos(char **args) //Libera la memoria de una estructura de punteros 
 {
    int i = 0;
 
@@ -12,7 +12,7 @@ void free_argumentos(char **args)
    free(args);
 }
 
-void free_ordenes_pipes(char **ordenes, int **fds, int nordenes)
+void free_ordenes_pipes(char **ordenes, int **fds, int nordenes) //Libera la memoria de la estructura de pipes
 {
    int i = 0;
 
