@@ -5,6 +5,15 @@ Participantes:
 •	Sergio Cañada García
 •	Esteban Gómez García
 •	Fátima Cristina de la Morena Rejón
+
+Fases de las prácticas realizadas: 
+ FASE 1: Ciclo de ejecución de órdenes.
+ FASE 2: Ejecución de órdenes externas simples en primer plano.
+ FASE 3: Ejecución de órdenes externas simples en segundo plano.
+ FASE 4: Realización de Makefile.
+ FASE 5: Ejecución de secuencia de órdenes.
+ FASE 6: Tratamiento de redirecciones.
+ FASE 7: Implementación de tuberías o pipes.
  
 Profesor: David Fernández Barrero
 
